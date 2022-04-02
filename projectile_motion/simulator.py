@@ -1,3 +1,5 @@
+import numba as nb
+
 from functools import cache
 import time
 from typing import Tuple, Type
@@ -33,8 +35,8 @@ class Destination:
     def __init__(self, goal_x: np.float, goal_z: np.float, x_allowance: np.float, z_allowance: np.float):
         self.x = goal_x
         self.z = goal_z
-        self.x_tol = np.float64(x_allowance + 0.0000000000000001)
-        self.z_tol = np.float64(z_allowance + 0.0000000000000001)
+        self.x_tol = np.float64(x_allowance)
+        self.z_tol = np.float64(z_allowance)
 
     def from_xzr(x: np.float, z: np.float, r: np.float):
         return Destination(x, z, r, r)
@@ -79,18 +81,13 @@ class Destination:
         events = list(filter(lambda events: len(events), soln.y_events[:4]))
 
         for event_list in events:
-            list(map(lambda place: print(np.float64(np.abs(
-                place[0] - self.x)), self.x_tol, np.float64(np.abs(place[2] - self.z)), self.z_tol), event_list))
-            print(list(map(lambda place: print((np.abs(
-                place[0] - self.x), self.x_tol, np.abs(place[2] - self.z)), self.z_tol), event_list)))
-
-        return len(events) and any(map(lambda event: any(map(lambda place: np.float64(np.abs(place[0] - self.x)) < self.x_tol and np.float64(np.abs(place[2] - self.z)) < self.z_tol, event)), events))
-
-        # def within_allowance(index):
-        #     not not len(soln.t_events[index]) and not len(soln.t_events[index - 1])
-
-        # # list(map(lambda info: print(info[1](0, soln.y_events[info[0]][0])), enumerate(self.terminate_goals)))
-        # return all(map(lambda info: within_allowance(info[0]), enumerate(self.terminate_goals)))
+            for place in event_list:
+                dif_x = np.abs(place[0] - self.x)
+                dif_z = np.abs(place[2] - self.z)
+                # print(dif_x, self.x_tol, dif_z, self.z_tol)
+                if (dif_x < self.x_tol or np.isclose(dif_x, self.x_tol)) and (dif_z < self.z_tol or np.isclose(dif_z, self.z_tol)):
+                    return True
+        return False
 
 
 class InitialShotInfo:
@@ -100,11 +97,25 @@ class InitialShotInfo:
 
 
 class ShotInfo:
-    def __init__(self, projectile: Projectile, initial_info: InitialShotInfo, destination: Destination, time_start: int, time_end: int):
+    def __init__(self, projectile: Projectile, destination: Destination, v0: np.float, max_time: int):
         self.proj = projectile
-        self.initial = initial_info
+        self.v0 = v0
         self.dest = destination
-        self.time_info = (time_start, time_end, time_end - time_start)
+        self.time_info = (0, max_time, max_time - 0)
+
+    def self_calc_shot(self):
+        return self.calculate_shot_pitch(self.dest)
+
+    def calculate_shot_pitch(self, destination: Destination):
+        for pitch in np.linspace(np.pi * -0.5, np.pi * 0.5, num=360):
+            print(pitch, pitch * 180 / np.pi)
+            soln = new_sim(self.proj, InitialShotInfo(
+                self.v0, pitch), self.dest, self.time_info[0], self.time_info[1])
+            if self.dest.reached_destination(soln):
+                print(soln, pitch)
+                return soln
+
+    # def calc_shot()
 
 
 def new_sim(proj: Projectile, init: InitialShotInfo, dest: Destination, time_start: int, time_end: int):
@@ -119,10 +130,7 @@ def new_sim(proj: Projectile, init: InitialShotInfo, dest: Destination, time_sta
 
     soln = solve_ivp(deriv, (time_start, time_end), u0, dense_output=True,
                      events=dest.goals)
-
-    print(dest.reached_destination(soln))
     return soln
-
 
 
 def find_latest_event_time(soln):
@@ -131,10 +139,6 @@ def find_latest_event_time(soln):
 
 
 def graph_simulation(soln):
-    print(soln)
-    print('Time to target = {:.2f} s'.format(soln.t_events[0][0]))
-    print('Time to highest point = {:.2f} s'.format(soln.t_events[1][0]))
-
     # A fine grid of time points from 0 until impact time.
     t = np.linspace(0, find_latest_event_time(soln), 100)
 
@@ -152,17 +156,19 @@ def graph_simulation(soln):
 if __name__ == "__main__":
     v0 = 50
     phi0 = np.radians(65)
-    start_sim = time.time()
 
     proj = Projectile(0.47, 0.05, 0.2)
     init = InitialShotInfo(50, np.radians(65))
     # dest = Destination(64.115772, 1, 0, 1.1)
-    dest = Destination.from_xzr(64.115772, 1, 0.3)
+    dest = Destination.from_xzr(20, 0.2, 1.5)
+    shot = ShotInfo(proj, dest, 50, 5)
 
-    # 6.33623381
+    start_sim = time.time()
 
-    soln = new_sim(proj, init, dest, 0, 50)
-    # soln = simulate(v0, phi0)
+    soln = shot.self_calc_shot()
+
     end_sim = time.time()
     print("sim took:", end_sim - start_sim)
-    graph_simulation(soln)
+
+    if soln:
+        graph_simulation(soln)
