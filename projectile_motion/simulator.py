@@ -185,6 +185,9 @@ class ShotInfo:
 
 
 def new_sim(proj: Projectile, init: InitialShotInfo, dest: Destination, time_start: int, time_end: int):
+
+    # We can update this to 3D motion, and by extension support horizontal wind, by just doing extra shit.
+    # fuckin' look at minecraft code, idiot. Lol.
     def deriv(t, u):
         x, xdot, z, zdot = u
         speed = np.hypot(xdot, zdot)

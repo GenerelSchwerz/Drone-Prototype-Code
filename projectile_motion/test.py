@@ -47,7 +47,7 @@ class Destination:
 
         def past_x_mid(t, u):
             return u[0] - self.x
-        past_x_min.terminal = True
+        past_x_mid.terminal = True
         past_x_mid.direction = 1
 
         def past_x_max(t, u):
@@ -64,7 +64,7 @@ class Destination:
         def past_z_mid(t, u):
             # The distance passed
             return u[2] - self.z
-        past_z_min.terminal = True
+        past_z_mid.terminal = True
         past_z_mid.direction = -1
 
         def past_z_max(t, u):
@@ -298,6 +298,8 @@ class ShotInfo:
 
 
 def new_sim(proj: Projectile, init: InitialShotInfo, dest: Destination, time_start: int, time_end: int):
+    # We can update this to 3D motion, and by extension support horizontal wind, by just doing extra shit.
+    # fuckin' look at minecraft code, idiot. Lol.
     def deriv(t, u):
         x, xdot, z, zdot = u
         speed = np.hypot(xdot, zdot)
@@ -473,20 +475,20 @@ def single_test(x, z, allow, v, t, graph=False):
 
 
 if __name__ == "__main__":
-    x = 74  # current distance target is away from us in meters.
+    x = 0  # current distance target is away from us in meters.
     dx = 5  # delta movement towards/away from us.
-    z = -28  # current distance target is up/down from us.
+    z = -10  # current distance target is up/down from us.
     dz = 0  # delta of up/down movement.
     allow = 0.02 # allowance of error for aiming, in meters.
-    v = 50  # speed of launch. I generalized this, set it to be whatever.
-    t = 5  # time in seconds of allowed simulation.
+    v = 25  # speed of launch. I generalized this, set it to be whatever.
+    t = 2  # time in seconds of allowed simulation.
     iterations = 100
 
     # single_test = actual use-case, can use it to track whatever.
     # single_test(x, z, allow, v, t, graph=True)
 
     # Demo of moving target, linear movement right now.
-    # test_move(x, dx, z, dz, allow, v, t, iterations=iterations, graph=True)
+    test_move(x, dx, z, dz, allow, v, t, iterations=iterations, graph=True)
 
     # full test showcasing range of utility. Tests variety of angles, speeds, etc.
-    full_test(allow,v, t, graph=False)
+    # full_test(allow,v, t, graph=True)

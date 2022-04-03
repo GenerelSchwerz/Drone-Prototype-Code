@@ -34,7 +34,6 @@ class DistanceSensor:
         while GPIO.input(GPIO_ECHO) == 0:
             start_time = time.time()
 
-
         self.last_update = time.time()
         while GPIO.input(GPIO_ECHO) == 1:
             self.last_update = time.time()
