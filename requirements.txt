@@ -1,2 +1,4 @@
 numpy
 vector
+scipy
+matplotlib

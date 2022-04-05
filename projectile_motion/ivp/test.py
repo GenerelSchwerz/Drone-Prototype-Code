@@ -184,7 +184,7 @@ class InitialShotInfo:
 class ShotInfo:
     def __init__(self, projectile: Projectile, destination: Destination, v0: np.float, max_time: int):
         self.proj = projectile
-        self.v0 = v0
+        self.v0 = np.float64(v0)
         self.dest = destination
         self.time_info = (0, max_time, max_time - 0)
 
@@ -480,7 +480,7 @@ if __name__ == "__main__":
     z = -10  # current distance target is up/down from us.
     dz = 0  # delta of up/down movement.
     allow = 0.02 # allowance of error for aiming, in meters.
-    v = 25  # speed of launch. I generalized this, set it to be whatever.
+    v = 50  # speed of launch. I generalized this, set it to be whatever.
     t = 2  # time in seconds of allowed simulation.
     iterations = 100
 
