@@ -2,3 +2,9 @@ numpy
 vector
 scipy
 matplotlib
+numba
+
+
+Raytracing (jitclass): 9784.30 ms
+fps: 1226.45
+Average calc time: 0.000815 ms

@@ -39,8 +39,8 @@ class ShotInfo:
 
     def smart_shot_pitch(self):
         org_pitch = self.get_pitch_wo_drag()
-        pitches, step = np.linspace(0, np.pi * (1/12), num=180, retstep=True)
-        midstep_count = 4
+        pitches, step = np.linspace(0, np.pi * (1/24), num=91, retstep=True)
+        midstep_count = 2
         midstep = step / midstep_count
         is_pos = self.identify_dir(org_pitch)
         last_dist = 100000
@@ -54,14 +54,14 @@ class ShotInfo:
             soln = new_sim(self.proj, self.dest, self.v0,
                            org_pitch + pitch, self.min_time, self.max_time)
             dist = self.dest.distance_to_sol(soln)
-            # print(org_pitch, org_pitch + pitch, dist)
             if self.dest.reached_destination(soln):
+                print(np.degrees(org_pitch + pitch), dist)
                 return soln
             if dist > last_dist:
                 return soln
             last_dist = dist
 
-            if np.abs(dist - self.dest.tol) < self.dest.tol * 2:
+            if dist < self.dest.tol * 2:
                 for step in range(1, midstep_count):
                     
                     soln = new_sim(self.proj, self.dest, self.v0, org_pitch + midstep * (index * midstep_count + step), self.min_time, self.max_time)

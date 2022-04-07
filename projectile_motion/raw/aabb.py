@@ -81,6 +81,11 @@ class AABB(object):
     def get_center(self):
         return vector.obj(x=lerp(0.5, self.minX, self.maxX), y=lerp(0.5, self.minY, self.maxY),z=lerp(0.5, self.minZ, self.maxZ))
 
+    def get_center_arr(self):
+        return np.array([lerp(0.5, self.minX, self.maxX), lerp(0.5, self.minY, self.maxY), lerp(0.5, self.minZ, self.maxZ)])
+
+
+
     def get_bottom_center(self):
         return vector.obj(x=lerp(0.5, self.minX, self.maxX), y=self.minY,z=lerp(0.5, self.minZ, self.maxZ))
 

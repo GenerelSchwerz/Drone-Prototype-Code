@@ -156,7 +156,7 @@ if __name__ == "__main__":
     v = 50.
     options = np.array([0.01, g, 0., 0.])
     t_eval = np.arange(0, 2.5, 0.002)
-    tolerance = 0.1
+    tolerance = 0.03
 
     # for JIT
     full_test(src, np.array([1, 1]), 5, np.array([0.00, 0, 0., 0.]), np.arange(0, 1, 0.1), 10)
