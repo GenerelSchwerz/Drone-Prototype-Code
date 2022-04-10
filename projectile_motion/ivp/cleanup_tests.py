@@ -156,20 +156,20 @@ def single_test(x, z, allow, v, t, graph=False):
 
 
 if __name__ == "__main__":
-    x = 100  # current distance target is away from us in meters.
+    x = 30  # current distance target is away from us in meters.
     dx = 10  # delta movement towards/away from us.
     z = -10  # current distance target is up/down from us.
     dz = -5  # delta of up/down movement.
-    allow = 0.03 # allowance of error for aiming, in meters.
+    allow = 0.1 # allowance of error for aiming, in meters.
     v = 50  # speed of launch. I generalized this, set it to be whatever.
     t = 3  # time in seconds of allowed simulation.
     iterations = 100
 
     # single_test = actual use-case, can use it to track whatever.
-    single_test(x, z, allow, v, t, graph=True)
+    # single_test(x, z, allow, v, t, graph=True)
 
     # Demo of moving target, linear movement right now.
-    # test_move(x, dx, z, dz, allow, v, t, iterations=iterations, graph=True)
+    test_move(x, dx, z, dz, allow, v, t, iterations=iterations, graph=True)
 
     # full test showcasing range of utility. Tests variety of angles, speeds, etc.
     # full_test(allow,v, t, graph=True)

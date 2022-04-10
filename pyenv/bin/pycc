@@ -1,0 +1,3 @@
+#!/home/generel/Documents/vscode/drone-shooter/python/bin/python
+from numba.pycc import main
+main()

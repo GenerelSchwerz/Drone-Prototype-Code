@@ -14,7 +14,6 @@ def distance_to(src: Vector3D, dest: Vector3D):
 def lerp(f, f2, f3):
     return f2 + f * (f3 - f2)
 
-
 aabb_specs = [
     ("minX", float64),
     ("minY", float64),

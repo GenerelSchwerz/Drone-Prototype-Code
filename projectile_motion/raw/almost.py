@@ -558,7 +558,7 @@ if __name__ == "__main__":
     y = 29
     z = 0
     r = 0.02
-    v = 90.
+    v = 50.
     t = 5
     fps = 75
     src = vector.obj(x=0., y=0., z=0.)
